@@ -1,0 +1,15 @@
+<h1>{{blog.title}}</h1>
+<p>{{blog.content}}</p>
+<p>by {{blog.author.email}}</p>
+{{#if user}}
+  {{#if (eq blog.author._id user._id)}}
+    <form action="/blogs/{{blog._id}}?_method=PUT" method="post">
+      <input type="text" name="title" value="{{blog.title}}" required>
+      <textarea name="content" required>{{blog.content}}</textarea>
+      <button type="submit">Edit</button>
+    </form>
+    <form action="/blogs/{{blog._id}}?_method=DELETE" method="post">
+      <button type="submit">Delete</button>
+    </form>
+  {{/if}}
+{{/if}}

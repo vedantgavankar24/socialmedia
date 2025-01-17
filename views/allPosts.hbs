@@ -1,0 +1,188 @@
+
+<!-- views/post.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Posts</title>
+    <link rel="stylesheet" href="/css/post-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    {{!-- {{#if currentUser}}
+      <h1>View My Posts</h1>
+    {{/if}} --}}
+
+    {{#if this.currentUser}}
+        <a href="/users/{{this.currentUser.username}}/posts">View Your Posts</a>
+        <a href="/users/{{this.currentUser._id}}/posts">View Your ID</a>
+    {{/if}}
+
+  {{#if posts.length}}
+            {{#each posts}}
+            
+    <div id="post-container" class="post">
+        <div class="post-header">
+            <img class="profile-pic" src="{{this.image}}" alt="Profile Picture">
+            <span class="username">{{this.author}}</span>
+            {{!-- <div class="share-menu">
+                <i class="fas fa-ellipsis-h" onclick="toggleShareMenu()"></i>
+                <div id="share-options" class="share-options">
+                    <a href="#" onclick="copyToClipboard('{{this.shareLink}}')">Share Post</a>
+                    <a href="#" onclick="">Visit Profile</a>
+                </div>
+            </div> --}}
+
+            <div class="share-menu">
+                <i class="fas fa-ellipsis-h" onclick="toggleShareMenu('{{this._id}}')"></i>
+                <div id="share-options-{{this._id}}" class="share-options">
+                    <a href="#" onclick="copyToClipboard('{{this.shareLink}}')">Share Post</a>
+                    <a href="#">Visit Profile</a>
+                </div>
+            </div>
+        </div>
+        {{#if this.image}}
+        <center><img  src="{{this.image}}" alt="Post Image" style="border-radius: 15px;"></center>
+        {{/if}}
+        
+        <div class="post-content">
+            <p class="post-title">{{this.title}}</p>
+            <p class="post-description">{{this.content}}</p>
+            <p class="post-date">{{this.createdAt}}</p>
+            <p class="post-date">{{this.timeElapsed}} ago</p>
+            
+        </div>
+
+
+        <div class="post-actions">
+            <a href="/posts/like/{{this._id}}/{{this.userId}}" onclick="toggleLike('{{this._id}}', '{{this.userId}}');">
+                {{!-- <button class="like-button"> --}}
+                {{#if this.postId}}
+                    <button id="like-button-{{this._id}}" class="like-button" data-liked="true">
+                        <span id="like-count-{{this._id}}">{{this.likesCount}}</span>
+                        <span id="like-text-{{this._id}}">Unlike</span>
+                    </button>
+                {{else}}
+                    <button id="like-button-{{this._id}}" class="like-button" data-liked="false">
+                        <span id="like-count-{{this._id}}">{{this.likesCount}}</span>
+                        <span id="like-text-{{this._id}}">Like</span>
+                    </button>
+                {{/if}}
+            </a>
+            
+            <button class="comment-button" onclick="toggleCommentSection('{{this._id}}')">Comment</button>
+  
+        </div>
+
+
+        <div class="comments-section" id="comments-{{this._id}}" style="display: none;">
+    <div class="comments-list">
+      {{#each this.comments}}
+      <div class="comment">
+        <p>{{this.content}}</p>
+      </div>
+      {{/each}}
+    </div>
+    <input type="text" class="comment-input" id="comment-input-{{this._id}}" placeholder="Add a comment...">
+    <button class="submit-comment" onclick="submitComment('{{this._id}}')">Submit</button>
+  </div>
+
+
+
+        <div class="comments-section">
+            <h2>Comments</h2>
+            <div class="comments-list">
+                <!-- Comments will be dynamically inserted here -->
+            </div>
+            <textarea class="comment-input" placeholder="Add a comment..."></textarea>
+            <button class="submit-comment" id="specialButton">Submit</button>
+        </div>
+
+
+
+    </div>
+  
+
+    {{/each}}
+        {{else}}
+            <p>No posts available</p>
+        {{/if}}
+
+    <script src="/js/post.js"></script>
+    <script src="/js/script.js"></script>
+    <script>
+let clicked = false;
+function toggleShareMenu(postId) {
+    // Close all share menus first
+    var allShareOptions = document.querySelectorAll(".share-options");
+    allShareOptions.forEach(function(menu) {
+        if (menu.id !== "share-options-" + postId) {
+            menu.style.display = "none";
+        }
+    });
+
+    // Toggle the specific menu
+    var shareOptions = document.getElementById("share-options-" + postId);
+    if (shareOptions.style.display === "block") {
+        shareOptions.style.display = "none";
+    } else {
+        shareOptions.style.display = "block";
+    }
+}
+
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        alert('Share link copied to clipboard');
+    }, function(err) {
+        console.error('Could not copy text: ', err);
+    });
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.matches('.fas')) {
+        var dropdowns = document.getElementsByClassName("share-options");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.style.display === "block") {
+                openDropdown.style.display = "none";
+            }
+        }
+    }
+}
+
+        function toggleLike(postId) {
+            const likeButton = document.getElementById(`like-button-${postId}`);
+            const likeCountElement = document.getElementById(`like-count-${postId}`);
+            const likeTextElement = document.getElementById(`like-text-${postId}`);
+            
+            let isLiked = likeButton.getAttribute('data-liked') === 'true';  // Check if liked
+            let currentLikes = parseInt(likeCountElement.innerText);
+
+            // Toggle like state
+            if (isLiked) {
+                likeButton.setAttribute('data-liked', 'false');  // Set as not liked
+                likeCountElement.innerText = currentLikes - 1;    // Decrease like count
+                likeTextElement.innerText = "Like";               // Change text to 'Like'
+            } else {
+                likeButton.setAttribute('data-liked', 'true');    // Set as liked
+                likeCountElement.innerText = currentLikes + 1;    // Increase like count
+                likeTextElement.innerText = "Unlike";             // Change text to 'Unlike'
+            }
+
+            fetch(`/posts/like/${postId}/${userId}`, {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ isLiked: !isLiked })  // Send the new like status
+    })
+        }
+
+    </script>
+</body>
+</html>
+
+

@@ -1,0 +1,136 @@
+<!-- views/post.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/css/post-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div id="post-container" class="post">
+        <div class="post-header">
+            <img class="profile-pic" src="{{image}}" alt="Profile Picture">
+            <span class="username">{{author}}</span>
+            <div class="share-menu">
+                <i class="fas fa-ellipsis-h" onclick="toggleShareMenu()"></i>
+                <div id="share-options" class="share-options">
+                    <a href="#" onclick="copyToClipboard('{{shareLink}}')">Share Post</a>
+                    <a href="#" onclick="">Visit Profile</a>
+                </div>
+            </div>
+        </div>
+        {{#if image}}
+        <center><img  src="{{image}}" alt="Post Image" style="border-radius: 15px;"></center>
+        {{/if}}
+        <div class="post-content">
+            <p class="post-title">{{title}}</p>
+            <p class="post-description">{{content}}</p>
+            <p class="post-date">{{createdAt}}</p>
+            <p class="post-date">{{timeElapsed}} ago</p>
+        </div>
+
+
+        <div class="post-actions">
+          <button class="like-button" onclick="likePost('{{_id}}')">Like</button>
+          <span id="like-count">{{likes}}</span>
+          <button class="comment-button" onclick="toggleCommentSection('{{_id}}')">Comment</button>
+        </div>
+
+
+        <div class="comments-section" id="comments-{{_id}}" style="display: none;">
+    <div class="comments-list">
+      {{#each comments}}
+      <div class="comment">
+        <p>{{content}}</p>
+      </div>
+      {{/each}}
+    </div>
+    <input type="text" class="comment-input" id="comment-input-{{_id}}" placeholder="Add a comment...">
+    <button class="submit-comment" onclick="submitComment('{{_id}}')">Submit</button>
+  </div>
+
+
+
+        <div class="comments-section">
+            <h2>Comments</h2>
+            <div class="comments-list">
+                <!-- Comments will be dynamically inserted here -->
+            </div>
+            <textarea class="comment-input" placeholder="Add a comment..."></textarea>
+            <button class="submit-comment" id="specialButton">Submit</button>
+        </div>
+
+
+
+    </div>
+
+    <script src="/js/post.js"></script>
+    <script src="/js/script.js"></script>
+    <script>
+        // public/scripts.js
+function toggleShareMenu() {
+    var shareOptions = document.getElementById("share-options");
+    if (shareOptions.style.display === "block") {
+        shareOptions.style.display = "none";
+    } else {
+        shareOptions.style.display = "block";
+    }
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        alert('Share link copied to clipboard');
+    }, function(err) {
+        console.error('Could not copy text: ', err);
+    });
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+    if (!event.target.matches('.fas')) {
+        var dropdowns = document.getElementsByClassName("share-options");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.style.display === "block") {
+                openDropdown.style.display = "none";
+            }
+        }
+    }
+}
+
+async function fetchAndUpdatePost() {
+      const postContainer = document.getElementById('post-container');
+      const postId = postContainer.getAttribute('data-id');
+
+      try {
+        const response = await fetch(`/posts/post/${postId}`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const post = await response.json();
+
+        console.log('Fetched post:', post);
+
+        // Update post content
+        document.querySelector('.post-title').innerText = post.title;
+        document.querySelector('.post-description').innerText = post.content;
+        document.querySelector('.post-image').src = post.image;
+        document.querySelector('.username').innerText = post.author.username;
+        document.querySelector('.profile-pic').src = post.author.profilePic;
+      } catch (error) {
+        console.error('Error fetching the post:', error);
+      }
+    }
+
+    // Update post content every minute
+    setInterval(fetchAndUpdatePost, 60000);
+
+    // Initial call to fetch and update post content on page load
+    fetchAndUpdatePost();
+
+
+
+    </script>
+</body>
+</html>
+

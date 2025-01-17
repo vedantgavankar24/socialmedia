@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome, {{this.username}}</h1>
+    <a href="/all/{{this._id}}"><h1>Dashboard</h1></a>
+    <div id="/trending"></div>
+    <div id="trending-posts">
+      <h2>Trending Posts</h2>
+      <div id="trending-posts-list"></div>
+      <div id="posts-container"></div>
+    </div>
+    <div id="my-posts">
+      <h2>My Posts</h2>
+      <div id="my-posts-list"></div>
+    </div>
+    
+    
+      <h1>Create New Post</h1>
+      <form action="/new-post" method="post" enctype="multipart/form-data">
+        <div><input type="text" name="title" placeholder="Title" required></div>
+        <div><textarea name="content" placeholder="Content" required></textarea></div>
+        <div><input type="text" name="image" placeholder="Image URL"></div>
+        <div>
+            <label for="image">Upload Image:</label>
+            <input type="file" id="image" name="image" accept="image/*">
+        </div>
+        <button type="submit" id="specialButton">Post</button>
+      </form>
+
+  </div>
+  <script src="/js/dashboard.js"></script>
+   <script src="/js/script.js"></script>
+   <script>
+    async function fetchAllPosts() {
+  try {
+    const response = await fetch('/posts/all');
+    if (!response.ok) throw new Error('Network response was not ok');
+    const posts = await response.json();
+    const postsContainer = document.getElementById('posts-container');
+    postsContainer.innerHTML = '';
+
+    posts.forEach(post => {
+      const postElement = document.createElement('div');
+      postElement.classList.add('post');
+
+      postElement.innerHTML = `
+        <div class="post-header">
+          <img class="profile-pic" src="${post.author.profilePic || '/default-profile-pic.png'}" alt="Profile Picture">
+          <span class="username">${post.author.username}</span>
+        </div>
+        <h1 class="post-title">${post.title}</h1>
+        <img class="post-image" src="${post.image || '/default-image.png'}" alt="Post Image">
+        <p class="post-description">${post.content}</p>
+      `;
+
+      postsContainer.appendChild(postElement);
+    });
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+  }
+}
+
+// Fetch posts when the page loads
+document.addEventListener('DOMContentLoaded', fetchAllPosts);
+
+   </script>
+</body>
+</html>

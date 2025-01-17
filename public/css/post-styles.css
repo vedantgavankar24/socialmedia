@@ -1,0 +1,155 @@
+/* styles.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fafafa;
+  margin: 0;
+  padding: 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+#post-container {
+  width: 500px;
+  background-color: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative; /* Ensure this container is positioned */
+  padding-bottom: 15px;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Distribute space between children */
+  padding: 10px;
+  border-bottom: 1px solid #dbdbdb;
+  position: relative; /* Ensure header is relative to contain absolute elements */
+}
+
+.profile-pic {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 2px solid #ccc !important;
+  margin-right: 10px !important;
+  display: block !important;
+}
+
+.username {
+  font-weight: bold;
+  flex: 1; /* Allow username to take up remaining space */
+}
+
+/* Adjust image styling */
+.post img {
+  width: 95%; /* Ensure the image takes full width of its container */
+  height: auto; /* Maintain aspect ratio */
+  max-height: 500px; /* Adjust this value as needed */
+  object-fit: cover; /* Cover the container while maintaining aspect ratio */
+}
+
+.post-content {
+  padding: 10px;
+}
+
+.post-title {
+  font-weight: bold;
+  margin: 0;
+}
+
+.post-description {
+  margin: 10px 0;
+}
+
+.post-date {
+  color: #8e8e8e;
+  font-size: 12px;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-top: 1px solid #dbdbdb;
+}
+
+.like-button, .comment-button {
+  background-color: transparent;
+  border: none;
+  color: #3897f0;
+  cursor: pointer;
+}
+
+.comments-section {
+  padding: 10px;
+  border-top: 1px solid #dbdbdb;
+}
+
+.comments-list {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.comment-input {
+  width: calc(100% - 20px);
+  padding: 5px;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+}
+
+.submit-comment {
+  background-color: #3897f0;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.share-menu {
+  position: relative;
+}
+
+.share-options {
+  display: none;
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  right: 0; /* Align to the right edge of the .post-header */
+  margin-top: 5px;
+  width: 150px;
+}
+
+.share-options a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
+}
+
+.share-options a:hover {
+  background-color: #f0f0f0;
+}
+
+.fas.fa-ellipsis-h {
+  cursor: pointer;
+  font-size: 20px;
+  position: absolute;
+  right: 0; /* Align to the right edge of the .post-header */
+  padding-right: 20px;
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%); /* Adjust vertical alignment */
+}
